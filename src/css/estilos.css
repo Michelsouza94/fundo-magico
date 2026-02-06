@@ -1,20 +1,19 @@
+/* Configurações Gerais */
 body {
-   color: #ffffff;
-    background: url(../images/bg.JPG);
+    color: #ffffff;
+    background: url(../images/bg.JPG); /* Fundo inicial */
     font-family: 'Roboto Mono', monospace;
     line-height: 1.4;
     padding: 32px 24px;
     margin: 0;
     min-height: 100vh;
-    /* Transição suave de 1.5 segundos com uma curva de velocidade moderna */
     transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
-
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 .header {
     margin-bottom: 48px;
-    z-index: 99;
     text-align: center;
 }
 
@@ -33,16 +32,14 @@ body {
 .container {
     max-width: 1024px;
     margin: 0 auto;
-    z-index: 99;
 }
 
+/* Card com efeito de Vidro (Glassmorphism) */
 .card {
-    .card {
-    background: rgba(255, 255, 255, 0.05); /* Fundo semi-transparente */
-    backdrop-filter: blur(10px); /* O efeito de desfoque de vidro */
+    background: rgba(255, 255, 255, 0.05); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
     border: 1px solid rgba(255, 255, 255, 0.1);
-    /* ... suas outras regras ... */
-}
     padding: 32px;
     border-radius: 16px;
     margin-bottom: 48px;
@@ -54,25 +51,24 @@ body {
     font-size: 20px;
 }
 
+/* Formulário */
 .form-group textarea {
     background-color: rgba(255, 255, 255, 0.05);
     color: #ffffff;
     width: 100%;
+    box-sizing: border-box; /* Garante que o padding não quebre a largura */
     min-height: 120px;
     padding: 16px;
     border: 1px solid #474646; 
     border-radius: 8px;
     font-size: 16px;
     margin-bottom: 20px;
+    resize: vertical;
 }
 
 .form-group textarea:focus {
     outline: none;
     border-color: #a655f7;
-}
-
-.form-group textarea::placeholder {
-    color: #a19e9e;
 }
 
 .form-group .btn-magic {
@@ -85,15 +81,17 @@ body {
     font-size: 17px;    
     font-weight: 600;   
     cursor: pointer;
-    transition: all 0.3 ease;
+    transition: all 0.3s ease;
 }
 
 .form-group .btn-magic:hover {
     transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(166, 85, 247, 0.3);
 }
 
+/* Preview e Código */
 .preview-card {
-    display: none;
+    display: none; /* Ativado via JS */
 }
 
 .code-grid {
@@ -109,18 +107,19 @@ body {
     width: 50%;
 }
 
-.code-title {
-    font-size: 20px;
-    margin-bottom: 16px;
-}
-
 .code-block {
     background-color: #0a0c10;
     color: #5eead4;
     border-radius: 8px;
     padding: 16px;
     font-size: 14px;
-
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+/* ANIMAÇÃO DE MOVIMENTO (Fundamental para o efeito de ondulação) */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
