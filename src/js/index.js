@@ -1,23 +1,8 @@
-const URL = "https://api.groq.com/openai/v1/chat/completions";
-
 const btn = document.getElementById('generate-btn');
 const descriptionInput = document.getElementById('description');
 const preview = document.getElementById('preview-section');
 const htmlCode = document.getElementById('html-code');
 const cssCode = document.getElementById('css-code');
-
-// Função inteligente para buscar a chave
-async function getApiKey() {
-    try {
-        
-        const module = await import('./key.js');
-        return module.API_KEY;
-    } catch (e) {
-        
-        console.warn("Ambiente online detectado. Usando chaves da Vercel.");
-        return null;
-    }
-}
 
 btn.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -29,24 +14,11 @@ btn.addEventListener('click', async (e) => {
     btn.disabled = true;
 
     try {
-        // Busca a chave de forma dinâmica
-        const localKey = await getApiKey();
-        
-        const FINAL_KEY = localKey || "";
-
-        const response = await fetch(URL, {
+        // No lugar da URL da Groq, use a sua nova rota:
+        const response = await fetch("/api/generate", {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${FINAL_KEY}`
-            },
-            body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
-                messages: [{
-                    role: "user", 
-                    content: `Crie um gradiente CSS linear vibrante para o tema: ${prompt}. Retorne APENAS o valor (ex: linear-gradient(90deg, #color1, #color2)). Sem markdown.`
-                }]
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: descriptionInput.value })
         });
 
         if (!response.ok) throw new Error("Erro na conexão com a IA");
