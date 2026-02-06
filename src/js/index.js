@@ -9,11 +9,11 @@ const cssCode = document.getElementById('css-code');
 // Função inteligente para buscar a chave
 async function getApiKey() {
     try {
-        // Tenta ler do seu arquivo local (funciona no seu PC)
+        
         const module = await import('./key.js');
         return module.API_KEY;
     } catch (e) {
-        // Se falhar (na Vercel), o código não trava e retorna vazio
+        
         console.warn("Ambiente online detectado. Usando chaves da Vercel.");
         return null;
     }
@@ -32,10 +32,7 @@ btn.addEventListener('click', async (e) => {
         // Busca a chave de forma dinâmica
         const localKey = await getApiKey();
         
-        // Se estiver na Vercel, o 'localKey' será null. 
-        // O navegador tentará buscar a variável de ambiente que você configurou.
-        // IMPORTANTE: Para sites simples, a chave deve ser passada no cabeçalho.
-        const FINAL_KEY = localKey || "SUA_CHAVE_AQUI_SE_FOR_PRIVADO"; 
+        const FINAL_KEY = localKey || "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"; 
 
         const response = await fetch(URL, {
             method: 'POST',
