@@ -32,7 +32,7 @@ btn.addEventListener('click', async (e) => {
         // Busca a chave de forma dinâmica
         const localKey = await getApiKey();
         
-        const FINAL_KEY = localKey || "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"; 
+        const FINAL_KEY = localKey || "";
 
         const response = await fetch(URL, {
             method: 'POST',
