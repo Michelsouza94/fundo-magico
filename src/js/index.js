@@ -6,67 +6,98 @@ const cssCode = document.getElementById('css-code');
 
 btn.addEventListener('click', async (e) => {
     e.preventDefault();
-    
-    const prompt = descriptionInput.value;
-    if (!prompt) return alert("Descreva o background primeiro!");
+
+    const prompt = descriptionInput.value.trim();
+
+    if (!prompt) {
+        return alert("Descreva o background primeiro!");
+    }
 
     btn.innerText = "Mágica instantânea...";
     btn.disabled = true;
 
     try {
-        // 1. Faz a chamada para a sua própria rota segura na Vercel
+        // 1. Chama a API da Vercel
         const response = await fetch("/api/generate", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        prompt: descriptionInput.value
-    })
-});
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: prompt
+            })
+        });
 
-const data = await response.json();
+        // 2. Lê a resposta
+        const data = await response.json();
 
-console.log("Resposta da API:", data);
+        console.log("Resposta da API:", data);
 
-if (!response.ok) {
-    throw new Error(data.error || "Erro na conexão com a IA");
-}
+        // 3. Verifica se a API retornou erro
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Erro na conexão com a IA"
+            );
+        }
 
-let generatedCss = data.content.trim();
-        
-        // 2. Limpa o texto recebido da IA
-        let generatedCss = data.content;
-        generatedCss = generatedCss.replace(/```css|```|;|background:|background-image:/g, "").trim();
+        // 4. Verifica se recebeu o CSS
+        if (!data.content) {
+            throw new Error(
+                "A IA não retornou um gradiente válido."
+            );
+        }
 
-        // 3. Aplica o visual ao fundo do site com o tamanho necessário para a animação
-        document.body.style.backgroundImage = "none"; 
+        // 5. Limpa o CSS recebido
+        let generatedCss = data.content
+            .replace(/```css/gi, "")
+            .replace(/```/g, "")
+            .replace(/background-image\s*:/gi, "")
+            .replace(/background\s*:/gi, "")
+            .trim();
+
+        console.log("CSS gerado:", generatedCss);
+
+        // 6. Aplica o background no site
+        document.body.style.backgroundImage = "none";
         document.body.style.background = generatedCss;
         document.body.style.backgroundSize = "400% 400%";
 
-        // 4. Cria a animação de ondulação (movimento suave)
-        document.body.animate([
-            { backgroundPosition: '0% 50%' },
-            { backgroundPosition: '100% 50%' },
-            { backgroundPosition: '0% 50%' }
-        ], {
-            duration: 15000, 
-            iterations: Infinity,
-            easing: 'ease-in-out'
-        });
+        // 7. Cria a animação
+        document.body.animate(
+            [
+                { backgroundPosition: "0% 50%" },
+                { backgroundPosition: "100% 50%" },
+                { backgroundPosition: "0% 50%" }
+            ],
+            {
+                duration: 15000,
+                iterations: Infinity,
+                easing: "ease-in-out"
+            }
+        );
 
-        // 5. Atualiza o card de preview e os campos de código
-        preview.style.display = "block"; 
+        // 8. Atualiza o preview
+        preview.style.display = "block";
         preview.style.background = generatedCss;
         preview.style.backgroundSize = "400% 400%";
         preview.style.animation = "gradientMove 15s ease infinite";
-        
-        htmlCode.textContent = `<div class="gradient-background"></div>`;
-        cssCode.textContent = `background: ${generatedCss};\nbackground-size: 400% 400%;\nanimation: gradientMove 15s ease infinite;`;
+
+        // 9. Mostra o código gerado
+        htmlCode.textContent =
+            `<div class="gradient-background"></div>`;
+
+        cssCode.textContent =
+            `background: ${generatedCss};
+background-size: 400% 400%;
+animation: gradientMove 15s ease infinite;`;
 
     } catch (error) {
-        console.error(error);
-        alert("A magia falhou: verifique os logs no console.");
+        console.error("Erro:", error);
+
+        alert(
+            "A magia falhou: " + error.message
+        );
+
     } finally {
         btn.innerText = "Gerar background Mágico";
         btn.disabled = false;
