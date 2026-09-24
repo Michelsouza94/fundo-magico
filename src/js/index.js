@@ -16,17 +16,27 @@ btn.addEventListener('click', async (e) => {
     try {
         // 1. Faz a chamada para a sua própria rota segura na Vercel
         const response = await fetch("/api/generate", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: descriptionInput.value })
-        });
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        prompt: descriptionInput.value
+    })
+});
 
-        if (!response.ok) throw new Error("Erro na conexão com a IA");
+const data = await response.json();
 
-        const data = await response.json();
+console.log("Resposta da API:", data);
+
+if (!response.ok) {
+    throw new Error(data.error || "Erro na conexão com a IA");
+}
+
+let generatedCss = data.content.trim();
         
         // 2. Limpa o texto recebido da IA
-        let generatedCss = data.choices[0].message.content.trim();
+        let generatedCss = data.content;
         generatedCss = generatedCss.replace(/```css|```|;|background:|background-image:/g, "").trim();
 
         // 3. Aplica o visual ao fundo do site com o tamanho necessário para a animação
